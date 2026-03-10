@@ -47,7 +47,7 @@ payload = [
 "templateName": "home"
 },
 "filters": {
-"buget": {
+"budget": {
 "max": 600
 },
 "origin": {
