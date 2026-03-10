@@ -1,25 +1,33 @@
 import requests
 import os
+import json
 
 URL = "https://vg-api.airtrfx.com/graphql"
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
+print("Bot started")
 
 def send_telegram(msg):
 
+    print("Sending telegram message...")
+    print(msg)
+
     if not TELEGRAM_TOKEN or not CHAT_ID:
-        print(msg)
+        print("Telegram credentials missing")
         return
 
-    requests.post(
+    r = requests.post(
         f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage",
         json={
             "chat_id": CHAT_ID,
             "text": msg
         }
     )
+
+    print("Telegram response:")
+    print(r.text)
 
 
 payload = [
@@ -77,10 +85,20 @@ def run():
         "user-agent": "Mozilla/5.0"
     }
 
+    print("Sending request to API...")
+
     r = requests.post(URL, json=payload, headers=headers)
+
+    print("Status code:", r.status_code)
+
     data = r.json()
 
+    print("Raw response:")
+    print(json.dumps(data, indent=2))
+
     fares = data[0]["data"]["standardFareModule"]["fares"]
+
+    print("Number of fares received:", len(fares))
 
     for fare in fares:
 
@@ -88,12 +106,15 @@ def run():
         value = seen["value"]
         unit = seen["unit"]
 
+        print("Checking fare:")
+        print(fare)
+
         recent = False
 
         if unit == "MINUTE":
             recent = True
 
-        if unit == "HOUR" and value < 24:
+        if unit == "HOUR" and value < 1:
             recent = True
 
         if recent:
