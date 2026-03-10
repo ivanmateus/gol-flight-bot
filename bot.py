@@ -47,6 +47,9 @@ payload = [
 "templateName": "home"
 },
 "filters": {
+"buget": {
+"max": 600
+},
 "origin": {
 "code": "SAO",
 "geoId": "-3461786"
@@ -103,7 +106,7 @@ def run():
     for fare in fares:
 
         seen = fare["priceLastSeen"]
-        value = seen["value"]
+        value = int(seen["value"])
         unit = seen["unit"]
 
         print("Checking fare:")
@@ -111,13 +114,13 @@ def run():
 
         recent = False
 
-        if unit == "MINUTE":
+        if unit == "minute" or unit == "minutes":
             recent = True
 
-        if unit == "HOUR" and value < 1:
+        if (unit == "hour" or unit == "hours") and value < 24:
             recent = True
 
-        if recent:
+        if recent and :
 
             message = (
                 "⚠ Recent Fare Found\n\n"
