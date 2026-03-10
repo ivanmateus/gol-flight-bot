@@ -6,8 +6,20 @@ URL = "https://vg-api.airtrfx.com/graphql"
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+STATE_FILE = "seen_fares.json"
 
 print("Bot started")
+
+def load_seen():
+    try:
+        with open(STATE_FILE) as f:
+            return json.load(f)
+    except:
+        return []
+
+def save_seen(data):
+    with open(STATE_FILE, "w") as f:
+        json.dump(data, f)
 
 def send_telegram(msg):
 
@@ -88,6 +100,8 @@ def run():
         "user-agent": "Mozilla/5.0"
     }
 
+    seen_fares = load_seen()
+
     print("Sending request to API...")
 
     r = requests.post(URL, json=payload, headers=headers)
@@ -101,6 +115,8 @@ def run():
 
     fares = data[0]["data"]["standardFareModule"]["fares"]
 
+    new_seen = seen_fares.copy()
+
     print("Number of fares received:", len(fares))
 
     for fare in fares:
@@ -108,6 +124,7 @@ def run():
         seen = fare["priceLastSeen"]
         value = int(seen["value"])
         unit = seen["unit"]
+        key = f"{fare['originCity']}-{fare['destinationCity']}-{fare['formattedDepartureDate']}-{fare['formattedTotalPrice']}"
 
         print("Checking fare:")
         print(fare)
@@ -120,17 +137,20 @@ def run():
         if (unit == "hour" or unit == "hours") and value < 24:
             recent = True
 
-        if recent:
+        if recent and key not in seen_fares:
 
             message = (
-                "⚠ Recent Fare Found\n\n"
+                "✈️ New Fare Alert\n\n"
                 f"{fare['originCity']} → {fare['destinationCity']}\n"
                 f"Departure: {fare['formattedDepartureDate']}\n"
-                f"Price: {fare['formattedTotalPrice']}\n\n"
+                f"Price: {fare['formattedTotalPrice']}\n"
                 f"Seen {value} {unit.lower()} ago"
             )
 
             send_telegram(message)
+            new_seen.append(key)
+
+    save_seen(new_seen)
 
 
 if __name__ == "__main__":
