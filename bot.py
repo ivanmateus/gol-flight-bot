@@ -134,7 +134,7 @@ def run():
         if unit == "minute" or unit == "minutes":
             recent = True
 
-        if (unit == "hour" or unit == "hours") and value < 24:
+        if (unit == "hour" or unit == "hours") and value < 5:
             recent = True
 
         if recent and key not in seen_fares:
