@@ -11,12 +11,12 @@ print("Bot started")
 
 def send_telegram(msg):
 
+    if not TELEGRAM_TOKEN or not CHAT_ID:
+        print("Telegram credentials missing", TELEGRAM_TOKEN, CHAT_ID)
+        return
+
     print("Sending telegram message...")
     print(msg)
-
-    if not TELEGRAM_TOKEN or not CHAT_ID:
-        print("Telegram credentials missing")
-        return
 
     r = requests.post(
         f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage",
