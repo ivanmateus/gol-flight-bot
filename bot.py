@@ -93,7 +93,7 @@ def run():
         if unit == "MINUTE":
             recent = True
 
-        if unit == "HOUR" and value < 1:
+        if unit == "HOUR" and value < 24:
             recent = True
 
         if recent:
