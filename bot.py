@@ -120,7 +120,7 @@ def run():
         if (unit == "hour" or unit == "hours") and value < 24:
             recent = True
 
-        if recent and :
+        if recent:
 
             message = (
                 "⚠ Recent Fare Found\n\n"
