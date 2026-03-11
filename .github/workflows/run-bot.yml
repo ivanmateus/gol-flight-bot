@@ -2,7 +2,7 @@ name: flight-bot
 
 on:
   schedule:
-    - cron: "19,49 * * * *"
+    - cron: "*/37 * * * *"
   workflow_dispatch:
 
 permissions:
