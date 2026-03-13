@@ -62,11 +62,11 @@ payload = [
 "budget": {
 "max": 600
 },
-"origin": {
+"destination": {
 "code": "SAO",
 "geoId": "-3461786"
 },
-"destination": {
+"origin": {
 "code": "MAO",
 "geoId": "6300620"
 }
